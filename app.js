@@ -4,26 +4,27 @@ import morgan from "morgan";
 import helmet from "helmet";
 import 'dotenv/config'
 
-import { sequelize } from './db.js';
+import { syncDB } from './db.js';
+import { environment } from "./environment.js";
+
+import './models/user.model.js'
+import { userRoutes } from './routes/user.routes.js'
 
 const app = express();
-const port = process.env.PORT || 5000;
-
 app.use(cors());
 app.use(helmet({
-    contentSecurityPolicy: false
+  contentSecurityPolicy: false
 }));
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(userRoutes)
 
-
-
-app.listen(port, async () => {
-    try {
-      await sequelize.authenticate();
-      console.log('Connection established successfully.');
-      console.log(`Server on port localhost:${port}`);
-    } catch (error) {
-      console.error('Unable to connect to the database:', error);
-    }
-  });
+app.listen(environment.PORT, async () => {
+  try {
+    syncDB()
+    console.log('Connection established successfully.');
+    console.log(`Server on port localhost:${environment.PORT}`);
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+});
