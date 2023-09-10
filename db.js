@@ -11,6 +11,7 @@ export const sequelize = new Sequelize(
         port:environment.DB.DB_PORT
     });
 
+    //synchronize the db
     export async function syncDB () {
         try {
           await sequelize.sync({ force: false })

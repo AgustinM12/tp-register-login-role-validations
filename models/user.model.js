@@ -25,7 +25,7 @@ export const User = sequelize.define("User", {
     },
     role: {
         type: DataTypes.ENUM(ROLES.ADMIN, ROLES.USER),
-        defaultValue: ROLES.USER,
+        // defaultValue: ROLES.USER,
     },
 }, {
     timestamps: true
@@ -33,7 +33,59 @@ export const User = sequelize.define("User", {
 
 //CREATE USER IN DB
 export async function createUserRegister(user) {
-    const hashedPass = await hashPass(user.password)
+    try {
 
-    return await User.create({ ...user, password: hashedPass })
-}
+        /* const existUsername = await User.findOne({
+            where: {
+                username: user.username
+            }
+        });
+
+        const existEmail = await User.findOne({
+            where: {
+                email: user.email
+            }
+        });
+
+        if (existUsername) {
+            return {
+                status: 409,
+                message: "Username already registered..."
+            };
+        }
+
+        if (existEmail) {
+            return {
+                status: 409,
+                message: "Email already registered..."
+            };
+        } */
+
+        const hashedPass = await hashPass(user.password)
+
+        return await User.create({ ...user, password: hashedPass })
+
+    } catch (error) {
+        console.log("Error at create user", error)
+    }
+};
+
+//FIND ALL USERS IN DB
+export async function findAllUser() {
+    try {
+        return await User.findAll() ?? null
+
+    } catch (error) {
+        console.log("Error at find users", error)
+    }
+};
+
+//FIND ONE USER IN DB
+export async function findUserById(id){
+    return await User.findByPk(id) ?? null
+};
+
+//UP´DATE USER IN DB
+
+
+//DELETE USER IN DB
