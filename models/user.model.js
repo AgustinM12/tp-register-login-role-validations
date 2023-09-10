@@ -46,7 +46,7 @@ export async function createUserRegister(user) {
                 email: user.email
             }
         });
-        
+
         if (existUsername) {
             return {
                 status: 409,
@@ -120,3 +120,31 @@ export async function deleteUser(id) {
         return await User.destroy({ where: { id: user.id } })
     }
 }
+
+//LOGIN BY EMAIL/PASSWORD
+export async function loginByEmailPass({ email, password }) {
+
+    try {
+
+        const registerUser = await User.findOne({
+            where: { email }
+        })
+
+        if (!registerUser) {
+            return null
+        }
+
+        const validPassword = await bcrypt.compare(password, registerUser.password)
+
+        if (!validPassword) {
+            return null
+        }
+
+        return registerUser
+
+    } catch (error) {
+        console.log("Intenal server error", error)
+        throw error
+    }
+
+};

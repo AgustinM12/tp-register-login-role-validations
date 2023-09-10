@@ -9,6 +9,7 @@ import { environment } from "./environment.js";
 
 import './models/user.model.js'
 import { userRoutes } from './routes/user.routes.js'
+import { authRoutes } from "./routes/auth.routes.js"
 
 const app = express();
 app.use(cors());
@@ -17,7 +18,8 @@ app.use(helmet({
 }));
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(userRoutes)
+app.use(userRoutes, authRoutes)
+
 
 app.listen(environment.PORT, async () => {
   try {
