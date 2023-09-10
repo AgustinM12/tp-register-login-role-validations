@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, json, where } from "sequelize";
 import { sequelize } from "../db.js";
 import { hashPass } from "../helpers/hashPassword.js"
 import bcrypt from "bcrypt";
@@ -35,7 +35,7 @@ export const User = sequelize.define("User", {
 export async function createUserRegister(user) {
     try {
 
-        /* const existUsername = await User.findOne({
+        const existUsername = await User.findOne({
             where: {
                 username: user.username
             }
@@ -46,7 +46,7 @@ export async function createUserRegister(user) {
                 email: user.email
             }
         });
-
+        
         if (existUsername) {
             return {
                 status: 409,
@@ -59,7 +59,7 @@ export async function createUserRegister(user) {
                 status: 409,
                 message: "Email already registered..."
             };
-        } */
+        }
 
         const hashedPass = await hashPass(user.password)
 
@@ -81,11 +81,42 @@ export async function findAllUser() {
 };
 
 //FIND ONE USER IN DB
-export async function findUserById(id){
+export async function findUserById(id) {
     return await User.findByPk(id) ?? null
 };
 
-//UP´DATE USER IN DB
+//UPDATE USER IN DB
+export async function updateUser(userId, userUpdate) {
+    try {
+
+        const user = await findUserById(userId)
+
+        if (!user) {
+            throw new Error("User not found")
+        }
+
+        return await user.update({
+            username: userUpdate.username,
+            email: userUpdate.email,
+            password: userUpdate.password,
+            role: userUpdate.role,
+        });
+
+    } catch (error) {
+
+        console.log("Error at update user ", error)
+    }
+}
 
 
 //DELETE USER IN DB
+export async function deleteUser(id) {
+
+    const user = await findUserById(id)
+
+    if (!user) {
+        throw new Error("User not found")
+    } else {
+        return await User.destroy({ where: { id: user.id } })
+    }
+}

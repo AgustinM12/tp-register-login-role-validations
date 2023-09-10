@@ -1,15 +1,19 @@
 import { Router } from "express";
 import { validation } from "../middlewares/validations.js";
 import { createUserSchema, loginUserSchema } from "../validators/user.validationSchema.js"
-import { ctrlCreateUser, ctrlFindOneUser, ctrlFindUsers } from "../controllers/user.controller.js";
+import { ctrlCreateUser, ctrlFindOneUser, ctrlFindUsers, ctrlUpdateUser, ctrlDeleteUser } from "../controllers/user.controller.js";
 
 const userRoutes = Router()
 
-userRoutes.post("/register", createUserSchema, validation, ctrlCreateUser)
+userRoutes.post("/", createUserSchema, validation, ctrlCreateUser)
 
-userRoutes.get("/find", ctrlFindUsers)
+userRoutes.get("/", ctrlFindUsers)
 
-userRoutes.get("/find/:id", ctrlFindOneUser)
+userRoutes.get("/:id", ctrlFindOneUser)
+
+userRoutes.put("/:id", ctrlUpdateUser)
+
+userRoutes.delete("/:id", ctrlDeleteUser)
 
 
 export { userRoutes };
