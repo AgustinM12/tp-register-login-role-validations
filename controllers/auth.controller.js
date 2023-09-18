@@ -6,13 +6,13 @@ import { environment } from "../environment.js"
 export const ctrLogin = async (req, res) => {
 
     try {
-        const registerUser = await loginByEmailPass(req.body)
+        const login = await loginByEmailPass(req.body)
 
-        if (!registerUser) {
+        if (!login) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const token = await createJWT({ userId: registerUser.id })
+        const token = await createJWT({ userId: login.id })
 
         res.status(200).json(token)
 

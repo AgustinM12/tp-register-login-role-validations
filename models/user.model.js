@@ -1,4 +1,4 @@
-import { DataTypes, json, where } from "sequelize";
+import { DataTypes, } from "sequelize";
 import { sequelize } from "../db.js";
 import { hashPass } from "../helpers/hashPassword.js"
 import bcrypt from "bcrypt";
@@ -125,26 +125,22 @@ export async function deleteUser(id) {
 export async function loginByEmailPass({ email, password }) {
 
     try {
+        const findRegisterUser = await User.findOne({where: { email }})
 
-        const registerUser = await User.findOne({
-            where: { email }
-        })
-
-        if (!registerUser) {
+        if (!findRegisterUser) {
             return null
         }
 
-        const validPassword = await bcrypt.compare(password, registerUser.password)
+        const validPassword = await bcrypt.compare(password, findRegisterUser.password)
 
         if (!validPassword) {
             return null
         }
 
-        return registerUser
+        return findRegisterUser
 
     } catch (error) {
         console.log("Intenal server error", error)
         throw error
     }
-
 };
